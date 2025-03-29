@@ -17,7 +17,7 @@ const subscriptionSchema = new mongoose.Schema(
     },
     currency: {
       type: String,
-      enum: ["USD", "EUR", "GBP", "INR", "JPY", "AUD"],
+      enum: ["USD", "EUR", "GBP", "INR", "JPY", "AUD", "SGD"],
       required: true,
     },
     frequency: {
@@ -42,7 +42,7 @@ const subscriptionSchema = new mongoose.Schema(
     },
     renewalDate: {
       type: Date,
-      required: true,
+      // required: true,
       validate: {
         validator: function (value) {
           return value > this.startDate;
