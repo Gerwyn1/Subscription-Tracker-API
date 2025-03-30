@@ -5,7 +5,6 @@ import transporter, { accountMail } from "../config/nodemailer.js";
 
 export const sendReminderEmail = async ({ to, type, subscription }) => {
   if (!to || !type) throw new Error("Email recipient and type are required");
-
   const template = emailTemplates.find((t) => t.label === type);
   if (!template) throw new Error("Invalid email type");
 
@@ -30,6 +29,6 @@ export const sendReminderEmail = async ({ to, type, subscription }) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) return console.error("Error sending email: ", error);
-    console.log("Email sent successfully: ", info);
+    console.log("Email sent successfully: ", info.response);
   });
 };

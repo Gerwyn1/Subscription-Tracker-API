@@ -11,7 +11,7 @@ const reminders = [
   { label: "5 days before reminder", daysBefore: 5 },
   { label: "2 days before reminder", daysBefore: 2 },
   { label: "1 day before reminder", daysBefore: 1 },
-  { label: "Final day reminder", daysBefore: 0 },
+  // { label: "Final day reminder", daysBefore: 0 },
 ];
 
 export const sendReminders = serve(async (context) => {
@@ -27,21 +27,25 @@ export const sendReminders = serve(async (context) => {
     return;
   }
 
-  for (const daysBefore of reminders) {
-    const reminderDate = renewalDate.subtract(daysBefore.daysBefore, "day");
+  for (const reminder of reminders) {
+    const reminderDate = renewalDate.subtract(reminder.daysBefore, "day");
+
     if (reminderDate.isAfter(dayjs())) {
       await sleepUntilReminder(
         context,
-        `Reminder ${daysBefore.daysBefore} days before`,
+        `Reminder ${reminder.daysBefore} days before`,
         reminderDate
       );
     }
 
-    await triggerReminder(
-      context,
-      `Reminder ${daysBefore.daysBefore} days before`,
-      reminderDate
-    );
+    if (dayjs().isSame(reminderDate, "day")) {
+      await triggerReminder(
+        context,
+        // `${reminder.daysBefore} days before reminder`,
+        reminder.label,
+        subscription
+      );
+    }
   }
 });
 
@@ -56,13 +60,14 @@ const sleepUntilReminder = async (context, label, date) => {
   await context.sleepUntil(label, date.toDate());
 };
 
-const triggerReminder = async (context, label) => {
+const triggerReminder = async (context, label, subscription) => {
   return await context.run(label, async () => {
     console.log(`Triggering ${label} reminder`);
     // Send email, SMS, push notification, etc.
     await sendReminderEmail({
       to: subscription.user.email,
-      type: reminders.label.subscription,
+      type: label,
+      subscription,
     });
   });
 };
