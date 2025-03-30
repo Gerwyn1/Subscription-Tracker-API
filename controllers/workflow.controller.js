@@ -11,7 +11,6 @@ const reminders = [
   { label: "5 days before reminder", daysBefore: 5 },
   { label: "2 days before reminder", daysBefore: 2 },
   { label: "1 day before reminder", daysBefore: 1 },
-  // { label: "Final day reminder", daysBefore: 0 },
 ];
 
 export const sendReminders = serve(async (context) => {
@@ -41,7 +40,6 @@ export const sendReminders = serve(async (context) => {
     if (dayjs().isSame(reminderDate, "day")) {
       await triggerReminder(
         context,
-        // `${reminder.daysBefore} days before reminder`,
         reminder.label,
         subscription
       );
